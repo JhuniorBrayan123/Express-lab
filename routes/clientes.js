@@ -25,7 +25,7 @@ let clientes = [
 
 // GET - Listar todos los clientes
 router.get("/", (req, res) => {
-  res.json({
+  res.render("clientes", {
     mensaje: "Lista de clientes",
     total: clientes.length,
     datos: clientes,

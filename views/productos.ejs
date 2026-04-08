@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Productos</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+    }
+    
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .stats {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 10px;
+      color: white;
+      margin-bottom: 30px;
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
+    
+    .stat-box {
+      margin: 10px 0;
+      font-size: 1.1em;
+      text-align: center;
+    }
+    
+    .stat-number {
+      font-size: 2em;
+      font-weight: bold;
+      color: #ffd700;
+    }
+    
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      background: white;
+      color: #f5576c;
+      padding: 10px 20px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    
+    .back-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    .productos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .producto-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      border-top: 5px solid #f5576c;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .producto-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(245,87,108,0.1) 0%, rgba(240,147,251,0.1) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .producto-card:hover {
+      transform: translateY(-8px) rotate(1deg);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+      border-top-color: #f093fb;
+    }
+    
+    .producto-card:hover::before {
+      opacity: 1;
+    }
+    
+    .producto-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .categoria-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 5px 12px;
+      border-radius: 50px;
+      font-size: 0.85em;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+    
+    .producto-nombre {
+      font-size: 1.4em;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 12px;
+    }
+    
+    .producto-precio {
+      font-size: 1.8em;
+      color: #f5576c;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+    
+    .precio-anterior {
+      font-size: 0.8em;
+      color: #999;
+      text-decoration: line-through;
+    }
+    
+    .producto-info {
+      margin: 12px 0;
+      display: flex;
+      align-items: center;
+      color: #555;
+      font-size: 0.95em;
+    }
+    
+    .info-label {
+      font-weight: bold;
+      color: #f5576c;
+      margin-right: 8px;
+      min-width: 90px;
+    }
+    
+    .stock-indicator {
+      display: inline-block;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      margin-top: 12px;
+      font-size: 0.9em;
+    }
+    
+    .stock-alto {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .stock-medio {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    .stock-bajo {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
+    .table-view {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      margin-top: 40px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    thead {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+    
+    th {
+      padding: 15px;
+      text-align: left;
+      font-weight: bold;
+    }
+    
+    td {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    tbody tr {
+      transition: background 0.3s ease;
+    }
+    
+    tbody tr:hover {
+      background: #fff5f7;
+    }
+    
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .empty {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+      font-size: 1.2em;
+    }
+    
+    @media (max-width: 768px) {
+      .productos-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-link">← Volver al inicio</a>
+    
+    <header>
+      <h1>Catalogo de Productos</h1>
+    </header>
+    
+    <div class="stats">
+      <div class="stat-box">
+        Total: <span class="stat-number"><%= total %></span>
+      </div>
+      <div class="stat-box">
+        Stock Total: <span class="stat-number"><%= datos.reduce((sum, p) => sum + p.cantidad, 0) %></span>
+      </div>
+      <div class="stat-box">
+        Valor Inventario: <span class="stat-number">$<%= (datos.reduce((sum, p) => sum + (p.precio * p.cantidad), 0)).toFixed(2) %></span>
+      </div>
+    </div>
+    
+    <% if (datos && datos.length > 0) { %>
+      <!-- Vista de Tarjetas -->
+      <div class="productos-grid">
+        <% datos.forEach(producto => { %>
+          <div class="producto-card">
+            <div class="producto-content">
+              <span class="categoria-badge"><%= producto.categoria %></span>
+              <div class="producto-nombre">
+                <%= producto.nombre %>
+              </div>
+              <div class="producto-precio">
+                $<%= producto.precio %>
+              </div>
+              <div class="producto-info">
+                <span class="info-label">Stock:</span>
+                <span><strong><%= producto.cantidad %></strong> unidades</span>
+              </div>
+              <div class="producto-info">
+                <span class="info-label">Total:</span>
+                <span>$<%= (producto.precio * producto.cantidad).toFixed(2) %></span>
+              </div>
+              <% 
+                let stockClass = 'stock-bajo';
+                let stockText = 'Bajo Stock';
+                if (producto.cantidad >= 30) {
+                  stockClass = 'stock-alto';
+                  stockText = '✓ Stock Disponible';
+                } else if (producto.cantidad >= 10) {
+                  stockClass = 'stock-medio';
+                  stockText = '⚠ Stock Moderado';
+                }
+              %>
+              <div class="stock-indicator <%= stockClass %>">
+                <%= stockText %>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+      
+      <!-- Vista de Tabla -->
+      <div class="table-view">
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% datos.forEach(producto => { %>
+              <tr>
+                <td><strong><%= producto.nombre %></strong></td>
+                <td><span class="categoria-badge"><%= producto.categoria %></span></td>
+                <td>$<%= producto.precio %></td>
+                <td><strong><%= producto.cantidad %></strong></td>
+                <td>$<%= (producto.precio * producto.cantidad).toFixed(2) %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="empty">
+        <p>No hay productos disponibles.</p>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>

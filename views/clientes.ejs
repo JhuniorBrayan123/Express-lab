@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Clientes</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+    }
+    
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .stats {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 10px;
+      color: white;
+      margin-bottom: 30px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .stat-box {
+      display: inline-block;
+      margin-right: 30px;
+      font-size: 1.1em;
+    }
+    
+    .stat-number {
+      font-size: 2em;
+      font-weight: bold;
+      color: #ffd700;
+    }
+    
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      background: white;
+      color: #667eea;
+      padding: 10px 20px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    
+    .back-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    .clientes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .cliente-card {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      border-left: 5px solid #667eea;
+    }
+    
+    .cliente-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+      border-left-color: #764ba2;
+    }
+    
+    .cliente-id {
+      background: #667eea;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    
+    .cliente-nombre {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+    }
+    
+    .cliente-info {
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      color: #555;
+    }
+    
+    .cliente-info-label {
+      font-weight: bold;
+      color: #667eea;
+      margin-right: 8px;
+      min-width: 80px;
+    }
+    
+    .cliente-info-value {
+      flex: 1;
+      word-break: break-all;
+    }
+    
+    .icon {
+      margin-right: 8px;
+      font-size: 1.2em;
+    }
+    
+    .table-view {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      margin-top: 40px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    thead {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    th {
+      padding: 15px;
+      text-align: left;
+      font-weight: bold;
+    }
+    
+    td {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    tbody tr {
+      transition: background 0.3s ease;
+    }
+    
+    tbody tr:hover {
+      background: #f5f7fa;
+    }
+    
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .empty {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+      font-size: 1.2em;
+    }
+    
+    .view-toggle {
+      margin: 20px 0;
+      text-align: center;
+    }
+    
+    .view-toggle button {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+      padding: 10px 20px;
+      margin: 0 5px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    
+    .view-toggle button.active {
+      background: #667eea;
+      color: white;
+    }
+    
+    .view-toggle button:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-link">← Volver al inicio</a>
+    
+    <header>
+      <h1>Gestion de Clientes</h1>
+    </header>
+    
+    <div class="stats">
+      <div class="stat-box">
+        Total de Clientes: <span class="stat-number"><%= total %></span>
+      </div>
+    </div>
+    
+    <% if (datos && datos.length > 0) { %>
+      <!-- Vista de Tarjetas -->
+      <div class="clientes-grid">
+        <% datos.forEach(cliente => { %>
+          <div class="cliente-card">
+            <div class="cliente-id"><%= cliente.id %></div>
+            <div class="cliente-nombre">
+              <span class="icon"></span><%= cliente.nombre %>
+            </div>
+            <div class="cliente-info">
+              <span class="cliente-info-label">Email:</span>
+              <span class="cliente-info-value"><%= cliente.email %></span>
+            </div>
+            <div class="cliente-info">
+              <span class="cliente-info-label">Teléfono:</span>
+              <span class="cliente-info-value"><%= cliente.telefono %></span>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+      
+      <!-- Vista de Tabla -->
+      <div class="table-view">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Teléfono</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% datos.forEach(cliente => { %>
+              <tr>
+                <td><strong><%= cliente.id %></strong></td>
+                <td><%= cliente.nombre %></td>
+                <td><%= cliente.email %></td>
+                <td><%= cliente.telefono %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="empty">
+        <p>No hay clientes registrados.</p>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>

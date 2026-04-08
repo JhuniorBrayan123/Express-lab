@@ -29,7 +29,7 @@ let productos = [
 
 // GET - Listar todos los productos
 router.get("/", (req, res) => {
-  res.json({
+  res.render("productos", {
     mensaje: "Lista de productos",
     total: productos.length,
     datos: productos,
